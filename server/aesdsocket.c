@@ -38,6 +38,7 @@ void daemonize() {
     }
     if (pid > 0) {
         // Parent exits
+        write_pid_file("/var/run/aesdsocket.pid");
         exit(EXIT_SUCCESS);
     }
 
@@ -57,6 +58,16 @@ void daemonize() {
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
+}
+
+void write_pid_file(const char *pidfile_path) {
+    FILE *pid_file = fopen(pidfile_path, "w");
+    if (pid_file == NULL) {
+        perror("Failed to open PID file");
+        exit(EXIT_FAILURE);
+    }
+    fprintf(pid_file, "%d\n", getpid());
+    fclose(pid_file);
 }
 
 int main(int argc, char *argv[]) {
@@ -148,6 +159,7 @@ static void cleanup() {
     pthread_mutex_destroy(&log_file_mutex);
     unlink(LOG_FILE);
     syslog(LOG_INFO, "Server shutting down");
+    unlink("/var/run/aesdsocket.pid");
     closelog();
 }
 
