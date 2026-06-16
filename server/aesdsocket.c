@@ -19,14 +19,15 @@ int server_socket = -1;
 pthread_mutex_t log_file_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* private helper functions for handling server operations */
-static int setup_server_socket(bool run_as_daemon);
-static int handle_server_loop();
-static int handle_storage_and_response(int client_socket);
-static int append_to_log_file(const char *data, ssize_t data_len);
-static int send_log_file_content(int client_socket);
+static int  setup_server_socket(bool run_as_daemon);
+static int  handle_server_loop();
+static int  handle_storage_and_response(int client_socket);
+static int  append_to_log_file(const char *data, ssize_t data_len);
+static int  send_log_file_content(int client_socket);
 static void cleanup();
 static void signal_handler(int signum) ;
 static void *client_handler(void *arg) ;
+static void write_pid_file(const char *pidfile_path);
 
 int run_as_daemon = 0;
 
@@ -61,6 +62,7 @@ void daemonize() {
 }
 
 void write_pid_file(const char *pidfile_path) {
+
     FILE *pid_file = fopen(pidfile_path, "w");
     if (pid_file == NULL) {
         perror("Failed to open PID file");
