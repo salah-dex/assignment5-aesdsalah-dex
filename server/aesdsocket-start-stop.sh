@@ -1,4 +1,5 @@
-﻿#!/bin/sh
+#!/bin/sh
+
 ### BEGIN INIT INFO
 # Provides:          aesdsocket
 # Required-Start:    $network
